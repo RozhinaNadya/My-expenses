@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct AddView: View {
-    
+    @ObservedObject var expenses: Expenses
     @State private var name = ""
     @State private var type = "Personal"
-    @State private var amount = ""
+    @State private var amount = "" //тк textField принимает только строку
 
     let types = ["Bussines", "Personal"]
     
@@ -25,13 +25,20 @@ struct AddView: View {
                     }
                 }
                 TextField("Expense", text: $amount)
+                    .keyboardType(.numberPad) //чтобы были только цифры
             }
-        } .navigationTitle("Add")
+            .navigationTitle("Add")
+            .navigationBarItems(trailing: Button("Save") {
+                guard let intAmount = Int(self.amount) else {return}
+                let item = ExpenseItem(name: self.name, type: self.type, amount: intAmount)
+                self.expenses.items.append(item)
+            })
+        }
     }
 }
 
 struct AddView_Previews: PreviewProvider {
     static var previews: some View {
-        AddView()
+        AddView(expenses: Expenses())
     }
 }
