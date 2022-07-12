@@ -12,6 +12,7 @@ struct AddView: View {
     @State private var name = ""
     @State private var type = "Personal"
     @State private var amount = "" //тк textField принимает только строку
+    @Environment(\.presentationMode) var presentationMode //для закрытия модальной view
 
     let types = ["Bussines", "Personal"]
     
@@ -24,7 +25,7 @@ struct AddView: View {
                         Text($0)
                     }
                 }
-                TextField("Expense", text: $amount)
+                TextField("Expense $", text: $amount)
                     .keyboardType(.numberPad) //чтобы были только цифры
             }
             .navigationTitle("Add")
@@ -32,6 +33,7 @@ struct AddView: View {
                 guard let intAmount = Int(self.amount) else {return}
                 let item = ExpenseItem(name: self.name, type: self.type, amount: intAmount)
                 self.expenses.items.append(item)
+                self.presentationMode.wrappedValue.dismiss() //закрываем 
             })
         }
     }
